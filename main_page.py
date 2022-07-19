@@ -1,7 +1,7 @@
 import streamlit as st
+from PIL import Image
+st.markdown("# Kyler Eastman, PhD")
 
-st.markdown("# Kyler Eastman ")
-st.sidebar.markdown("# Contents")
 
 col1, col2 = st.columns([3, 1])
 
@@ -11,9 +11,12 @@ with col1:
     - [kyler.eastman@gmail.com](kyler.eastman@gmail.com)
     - [linkedin](https://www.linkedin.com/in/kylereastman/)
     - [google scholar](https://scholar.google.com/citations?user=uUwIlwcAAAAJ&hl=en)
+    - [Resume](https://github.com/keastman/streamlit_public/blob/main/simple_resume_2022e.pdf)
 
     ''')
 
 with col2:
-    st.image('./profile_pic.png', width=150)
+
+    image = Image.open('./profile_pic.png')
+    st.image(image, width=250)
 
