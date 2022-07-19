@@ -3,9 +3,10 @@ import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
 
-st.markdown("# Fitness Rosetta 🚴🏃")
-st.sidebar.markdown("# Fitness Rosetta 🚴🏃")
-
+st.markdown('''# Fitness Rosetta 🚴🏃''')
+st.markdown('''
+    interactive comparison of running, cycling, & physiological metrics
+    ''')
 
 
 #### FUNCTIONS
@@ -19,7 +20,6 @@ def speed_to_pace(mph):
         out = '%d:' %(hours)+out
     return out
 
-
 def y_mph_to_race_mph(y):
     '''converts y axis in mph to prs for distances'''
     return [
@@ -31,12 +31,9 @@ def y_mph_to_race_mph(y):
         y[1] # marathon
         ]
 
-
 def make_race_prediction_df(re,lt,vo2max):
     df = pd.DataFrame(np.random.rand(6,2),index=dist_names, columns=['Time','Pace'])
     return df
-
-
 
 
 # distance dictionary
@@ -52,10 +49,12 @@ labels = ['LT1','MGP','LT2','V02MAX','SPRINT']
 
 # x-axis options for graph
 x_options = [
-    'v02 (ml/kg/min)',
-    'power (watts)',
-    'power/weight ratio (watts/kg)',
-    'energy consumption (cals/hr)']
+    'v02',
+    'power',
+    'power/weight',
+    'energy consumption',
+    'METs',
+    'v02 estimations']
 
 # plot limits
 vo2axes = np.arange(30,81,5) 
@@ -70,27 +69,35 @@ thresh_names = ['MGP','LT','VO2MAX']
 
 #### INITIALIZE COMPONENTS
 st.sidebar.markdown('# Metrics')
-re = st.sidebar.slider('RE (ml/kg)', min_value=150, max_value=250, value=220)
-vo2max = st.sidebar.slider('VO2 (ml/kg/min)', min_value=30, max_value=100,value=50)
-lt = st.sidebar.slider('Lactate Threshold (% of V02max)', min_value=60, max_value=100, value=90)
+vo2max = st.sidebar.slider('VO2 (ml/kg/min)', min_value=30, max_value=100, value=50, step=2)
+lt = st.sidebar.slider('Lactate Threshold (% of V02max)', min_value=60, max_value=100, value=90, step=2)
+re = st.sidebar.slider('RE (ml/kg)', min_value=150, max_value=250, value=220, step=2)
+st.sidebar.markdown('### for estimators')
+w_kg = st.sidebar.slider('weight (kg)', min_value=40, max_value=120, value=80)
+age = st.sidebar.slider('age (yrs)', min_value=10, max_value=70, value=30)
+resting_hr = st.sidebar.slider('resting hr (bpm)', min_value=40, max_value=90, value=50)
+max_hr = st.sidebar.slider('max hr (bpm)', min_value=140, max_value=220, value=180)
+
+
 st.sidebar.markdown('## Show:')
 graph_checkbox_bool = st.sidebar.checkbox("graph", True, key=1)
 if graph_checkbox_bool:
     x_axis_selectbox = st.sidebar.selectbox('X-axis', x_options)
 race_prediction_bool = st.sidebar.checkbox("race predictions", False, key=2)
-settings_checkbox_bool = st.sidebar.checkbox("settings", False, key=3)
-if settings_checkbox_bool:
-    units = st.sidebar.radio('weight', ['metric','English'])
-    weight = st.sidebar.number_input('weight (kg)', value=80)
 ref_checkbox_bool = st.sidebar.checkbox("references", False, key=4)
 
 
-#### UPDATE ESTIMATES
-lt1_mgp_lt2_spt_pct = np.array([100-2*(100-lt),100-1.5*(100-lt),lt,100,100+0.5*(100-lt)])/100.0
+#### UPDATE ESTIMATES based on vo2max & LT
+lt1_mgp_lt2_spt_pct = np.array(
+    [100-2*(100-lt),
+     100-1.5*(100-lt),
+     lt,
+     100,
+     100+0.5*(100-lt)]
+    )/100.0 
 y_mphs= lt1_mgp_lt2_spt_pct*0.624*60*vo2max/re
 x_vo2s = lt1_mgp_lt2_spt_pct*vo2max
-
-
+ 
 
 ### FUNCTIONALITY 
 if graph_checkbox_bool:
@@ -98,16 +105,39 @@ if graph_checkbox_bool:
     plt.plot(x_vo2s,y_mphs)
     plt.plot(x_vo2s,y_mphs,'.')
     plt.xlabel(x_axis_selectbox)
+    plt.ylabel('pace (min/mi)')
     
-    # AXIS LABELS
-    # lab_list1 = ['','','','','']
-    # for i,h in enumerate(x_vo2s):
-    #     lab_list1[i] = ax.text(vo2axes[0],y_mphs[i]+0.01,speed_to_pace(y_mphs[i]))
-
     lab_list2 = ['','','','','']
+    
+    # interactive x axis
     for i,h in enumerate(x_vo2s):
         lab_list2[i] = ax.text(x_vo2s[i],y_mphs[i]-0.15, '%s %d' %(labels[i], 100*lt1_mgp_lt2_spt_pct[i]))
-
+    if x_axis_selectbox=='power':
+        ax.set_xticks(vo2axes)
+        ax.set_xticklabels(['%d \n %2.0f' %(v,(0.22*w_kg*v*5*4184.0)/(1000*60)) for v in vo2axes])
+        ax.set_xlabel('V02 (ml/kg/min) \n power (watts)', fontsize=12)
+    elif x_axis_selectbox=='power/weight':
+        ax.set_xticks(vo2axes)
+        ax.set_xticklabels(['%d \n %2.1f' %(v,(0.22*v*5*4184.0)/(1000*60)) for v in vo2axes])
+        ax.set_xlabel('V02 (ml/kg/min) \n power/weight (watts/kg)', fontsize=12)
+    elif x_axis_selectbox=='energy consumption':
+        ax.set_xticks(vo2axes)
+        ax.set_xticklabels(['%d \n %2.0f' %(v,(v*w_kg*5*60.0)/(1000)) for v in vo2axes])
+        ax.set_xlabel('V02 (ml/kg/min) \n cals/hr', fontsize=12)
+    elif x_axis_selectbox=='METs (1.05 Cals/kg/hr)':
+        ax.set_xticks(vo2axes)
+        ax.set_xticklabels(['%d \n %2.0f' %(v,(v*5*60.0)/(1000*1.05)) for v in vo2axes])
+        ax.set_xlabel('V02 (ml/kg/min) \n METs', fontsize=12)
+    elif x_axis_selectbox=='v02 estimations':
+        ax.axvline(15*max_hr/resting_hr,label= 'Uth et al., 2004',color='r')
+        ax.axvline(1000*(3.542+(-0.014*age) + (0.015*w_kg) + (-0.011*resting_hr))/w_kg,label= 'Rexhepi et al., 2014', color='g')
+        ax.set_xlabel('V02 (ml/kg/min)', fontsize=12)
+        ax.legend()
+    elif x_axis_selectbox=='v02':
+        ax.set_xticks(vo2axes)
+        ax.set_xticklabels(vo2axes)
+        ax.set_xlabel('V02 (ml/kg/min)', fontsize=12)
+        
     ax.set_yticks(speed_axes)
     ax.set_yticklabels([speed_to_pace(y) for y in speed_axes])
     plt.grid()
@@ -128,7 +158,6 @@ if race_prediction_bool:
             },
             index=dist_dict.keys())
     st.table(df)
-
 
 
 
