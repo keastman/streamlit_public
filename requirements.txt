@@ -2,4 +2,3 @@ pandas
 streamlit
 numpy
 matplotlib
-PIL == 9.2.0
