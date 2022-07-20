@@ -2,4 +2,4 @@ pandas
 streamlit
 numpy
 matplotlib
-PIL
+PIL == 9.2.0
