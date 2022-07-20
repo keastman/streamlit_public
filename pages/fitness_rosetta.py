@@ -3,6 +3,8 @@ import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
 
+plt.style.use('dark_background')
+
 st.markdown('''# Fitness Rosetta 🚴🏃''')
 st.markdown('''
     interactive comparison of running, cycling, & physiological metrics
@@ -54,7 +56,7 @@ x_options = [
     'power/weight',
     'energy consumption',
     'METs',
-    'v02 estimations']
+    'v02 estimators']
 
 # plot limits
 vo2axes = np.arange(30,81,5) 
@@ -72,7 +74,7 @@ st.sidebar.markdown('# Metrics')
 vo2max = st.sidebar.slider('VO2 (ml/kg/min)', min_value=30, max_value=100, value=50, step=2)
 lt = st.sidebar.slider('Lactate Threshold (% of V02max)', min_value=60, max_value=100, value=90, step=2)
 re = st.sidebar.slider('RE (ml/kg)', min_value=150, max_value=250, value=220, step=2)
-st.sidebar.markdown('### for estimators')
+st.sidebar.markdown('### For V02 max estimators')
 w_kg = st.sidebar.slider('weight (kg)', min_value=40, max_value=120, value=80)
 age = st.sidebar.slider('age (yrs)', min_value=10, max_value=70, value=30)
 resting_hr = st.sidebar.slider('resting hr (bpm)', min_value=40, max_value=90, value=50)
@@ -128,7 +130,7 @@ if graph_checkbox_bool:
         ax.set_xticks(vo2axes)
         ax.set_xticklabels(['%d \n %2.0f' %(v,(v*5*60.0)/(1000*1.05)) for v in vo2axes])
         ax.set_xlabel('V02 (ml/kg/min) \n METs', fontsize=12)
-    elif x_axis_selectbox=='v02 estimations':
+    elif x_axis_selectbox=='v02 estimators':
         ax.axvline(15*max_hr/resting_hr,label= 'Uth et al., 2004',color='r')
         ax.axvline(1000*(3.542+(-0.014*age) + (0.015*w_kg) + (-0.011*resting_hr))/w_kg,label= 'Rexhepi et al., 2014', color='g')
         ax.set_xlabel('V02 (ml/kg/min)', fontsize=12)
