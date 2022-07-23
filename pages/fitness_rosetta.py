@@ -16,6 +16,7 @@ st.sidebar.markdown('''
 
 #### FUNCTIONS
 def speed_to_pace(mph):
+    '''converts an mph to a pace string min:mi'''
     pace_min_mi = 60/mph
     hours = np.floor(pace_min_mi/60)
     mins = pace_min_mi - hours*60
@@ -55,6 +56,9 @@ def get_speed_array(lt,vo2max,re):
     y_mphs= lt1_mgp_lt2_spt_pct*0.624*60*vo2max/re
     x_vo2s = lt1_mgp_lt2_spt_pct*vo2max
     return lt1_mgp_lt2_spt_pct,y_mphs,x_vo2s
+
+#def conv_vo2(vo2):
+
 
 #### Constants
 # distance dictionary
