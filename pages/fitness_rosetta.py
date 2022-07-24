@@ -10,7 +10,7 @@ import streamlit.components.v1 as components
 
 plt.style.use('classic')
 st.markdown("<h1 style='text-align: center; color: black;'>🚴🏃Fitness Rosetta🚴🏃</h1>", unsafe_allow_html=True)
-st.sidebar.markdown(''' ## About''')
+#st.sidebar.markdown(''' ## About''')
 st.sidebar.markdown('''
     interactive comparison of running, cycling, & physiological metrics
     ''')
