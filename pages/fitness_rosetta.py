@@ -129,6 +129,7 @@ if graph_checkbox_bool:
     with col2:
         components.html(fig_html, height=600)
 
+# race prediction      
 if race_prediction_bool:
     col2.markdown('### Race Predictions')
     race_mph = fu.race_predict(z_mph)
@@ -144,8 +145,7 @@ if race_prediction_bool:
     col2.table(df)
 
     
-    
-
+# references
 if ref_checkbox_bool:
     col2.markdown('''
     ## References:

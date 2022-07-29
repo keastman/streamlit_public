@@ -1,5 +1,5 @@
 pandas 
-streamlit
+streamlit>=1.11.1
 numpy
 matplotlib
 mpld3
