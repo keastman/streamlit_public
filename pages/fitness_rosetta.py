@@ -10,9 +10,27 @@ import streamlit.components.v1 as components
 
 plt.style.use('classic')
 st.markdown("<h1 style='text-align: center; color: black;'>🚴🏃Fitness Rosetta🚴🏃</h1>", unsafe_allow_html=True)
-#st.sidebar.markdown(''' ## About''')
 st.sidebar.markdown('''
-    interactive comparison of running, cycling, & physiological metrics
+Interactive comparison of running, cycling, & physiological metrics.  The graph shows the approx. linear relationship between energy and speed. Try moving the sliders to see how changes in vo2max,lactate threshold, and running economy affect this relationship. 
+
+I use V02 as a proxy for energy since it's understood across a variety of sports.  I use:
+- 5kcal = 1 liter 02.
+- 22% cycling efficiency
+    
+Horizontal and vertical bars show zones for energy & speed (pace). Other metrics include:
+- cycling power (wattage) 
+- cycling power/weight (watts/kg)
+- energy use (cal/hr) 
+- METs (coming soon)
+- estimators based on: 
+  - age,weight,resting HR (Rexhepi)
+  - min/max HR (Uth)
+
+
+Click below to get race predictions & references. Enjoy!
+
+Feedback?  kyler.eastman@gmail.com
+   
     ''')
 
 
